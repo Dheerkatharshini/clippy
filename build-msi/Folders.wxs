@@ -1,0 +1,27 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Fragment>
+		<!-- Main installation directory under Program Files -->
+		<StandardDirectory Id="ProgramFiles64Folder">
+			<Directory Id="INSTALLFOLDER" Name="!(bind.Property.ProductName)" />
+		</StandardDirectory>		
+		
+		<StandardDirectory Id="ProgramFilesFolder">
+			<Directory Id="INSTALLFOLDER32" Name="!(bind.Property.ProductName)" />
+		</StandardDirectory>
+
+		<StandardDirectory Id="ProgramFiles64Folder">
+			<Directory Id="INSTALLFOLDERARM64" Name="!(bind.Property.ProductName)" />
+		</StandardDirectory>
+
+		<!-- Shortcut directory under Start Menu -->
+		<StandardDirectory Id="ProgramMenuFolder">
+			<Directory Id="ApplicationProgramsFolder" Name="!(bind.Property.ProductName)" />
+		</StandardDirectory>
+
+		<StandardDirectory Id="StartupFolder">
+    		<Directory Id="AppStartupFolder" Name="!(bind.Property.ProductName)"/>
+		</StandardDirectory>
+
+		<Icon Id="ClippyIconId" SourceFile="../assets/win-ico/clippy.ico" />
+	</Fragment>
+</Wix>

@@ -1,0 +1,13 @@
+[Unit]
+Description=clippy
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/local/bin/clippy
+Restart=always
+RestartSec=5
+Environment="LOG=debug"
+Environment="CLIPPY_SERVICE=1"
+
+[Install]
+WantedBy=graphical-session.target

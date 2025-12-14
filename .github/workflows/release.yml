@@ -1,0 +1,69 @@
+name: Create Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write # minimal permission needed for release creation
+
+jobs:
+  create-release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read version from merge message and update Cargo.toml
+        id: update_version
+        run: |
+          MERGE_TITLE="${{ github.event.pull_request.title }}"
+          echo "Merge title: $MERGE_TITLE"
+
+          # Extract version from merge title
+          VERSION=$(echo "$MERGE_TITLE" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | sed 's/^v//')
+          echo "Extracted version: $VERSION"
+
+          # Update Cargo.toml files
+          for TOML_PATH in clippy/Cargo.toml clippy-gui/Cargo.toml clippy-server/Cargo.toml; do
+            sed -i "s/^version\s*=.*/version = \"$VERSION\"/" "$TOML_PATH"
+          done
+
+          # Update install.sh
+          INSTALL_SH=build-linux/install.sh
+          sed -i "s/^VERSION\s*=.*/VERSION=\"$VERSION\"/" "$INSTALL_SH"
+
+          # Export version for later steps
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ steps.update_version.outputs.version }}"
+          name: "Release v${{ steps.update_version.outputs.version }}"
+          body: "${{ github.event.pull_request.body }}"
+          draft: true
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  call-linux:
+    needs: create-release
+    uses: ./.github/workflows/release-linux.yml
+    secrets: inherit
+    permissions: write-all
+
+  call-win:
+    needs: create-release
+    uses: ./.github/workflows/release-win.yml
+    secrets: inherit
+    permissions: write-all
+
+  call-mac:
+    needs: create-release
+    uses: ./.github/workflows/release-mac.yml
+    secrets: inherit
+    permissions: write-all

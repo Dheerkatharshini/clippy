@@ -1,0 +1,35 @@
+[package]
+name = "clippy-server"
+version = "0.1.5"
+edition = "2024"
+
+[dependencies]
+actix-multipart = "0.7.2"
+actix-web = "4"
+env_logger = "0.11.7"
+futures-util = "0.3.31"
+log = "0.4.27"
+rand = "0.9.0"
+uuid = { version = "1.16.0", features = ["serde", "v4"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+clippy = { path = "../clippy", default-features = false, features = ["server"] }
+chrono = "0.4.40"
+jsonwebtoken = "9.3.1"
+lettre = { version = "0.11", default-features = false, features = [
+    "tokio1-native-tls",
+    "smtp-transport",
+    "builder",
+] }
+actix-web-httpauth = "0.8.2"
+base64 = "0.22.1"
+sha2 = "0.10.9"
+actix-ws = "0.3.0"
+sqlx = { version = "0.8", features = [
+    "runtime-tokio",
+    "tls-rustls-ring-native-roots",
+    "postgres",
+    "chrono",
+] }
+bytestring = { version = "1.4.0", features = ["serde"] }

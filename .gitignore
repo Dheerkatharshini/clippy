@@ -1,0 +1,10 @@
+target/
+.vs/
+.vscode/
+clippy-server/credentials/
+android-clippy/.kotlin/errors
+data-base/
+credentials/
+/build
+log
+.env
